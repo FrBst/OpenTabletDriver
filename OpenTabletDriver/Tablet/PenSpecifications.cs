@@ -16,5 +16,9 @@ namespace OpenTabletDriver.Tablet
         [DisplayName("Max Pressure")]
         [Required(ErrorMessage = $"Pen {nameof(MaxPressure)} must be defined")]
         public uint MaxPressure { set; get; }
+
+        public bool invertTiltX { set; get; } = false;
+
+        public bool invertTiltY { set; get; } = false;
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 using OpenTabletDriver.Tablet;
 using OpenTabletDriver.Tablet.Touch;
@@ -29,7 +30,7 @@ namespace OpenTabletDriver.Desktop.RPC
             return sb.ToString();
         }
 
-        public static string GetStringFormat(IDeviceReport report)
+        public static string GetStringFormat(TabletConfiguration tabletConfiguration, IDeviceReport report)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -46,7 +47,7 @@ namespace OpenTabletDriver.Desktop.RPC
             if (report is IHoverReport proximityReport)
                 sb.AppendLines(GetStringFormat(proximityReport));
             if (report is ITiltReport tiltReport)
-                sb.AppendLines(GetStringFormat(tiltReport));
+                sb.AppendLines(GetStringFormat(tabletConfiguration, tiltReport));
             if (report is ITouchReport touchReport)
                 sb.AppendLines(GetStringFormat(touchReport));
             if (report is IMouseReport mouseReport)
@@ -90,9 +91,18 @@ namespace OpenTabletDriver.Desktop.RPC
             yield return $"Confidence:{confidenceReport.HighConfidence}";
         }
 
-        private static IEnumerable<string> GetStringFormat(ITiltReport tiltReport)
+        private static IEnumerable<string> GetStringFormat(TabletConfiguration tabletConfiguration, ITiltReport tiltReport)
         {
-            yield return $"Tilt:{tiltReport.Tilt}";
+            Vector2 tilt = new Vector2(tiltReport.Tilt.X, tiltReport.Tilt.Y);
+
+            if (tabletConfiguration.Specifications.Pen.invertTiltX) {
+                tilt.X *= -1;
+            }
+            if (tabletConfiguration.Specifications.Pen.invertTiltY) {
+                tilt.Y *= -1;
+            }
+            
+            yield return $"Tilt:{tilt}";
         }
 
         private static IEnumerable<string> GetStringFormat(ITouchReport touchReport)

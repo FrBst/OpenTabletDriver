@@ -215,7 +215,7 @@ namespace OpenTabletDriver.Daemon
                 if (endpoint is null)
                     return;
 
-                endpoint.ReportCloned += (_, report) => PostDebugReport(endpoint.Configuration.Name, report);
+                endpoint.ReportCloned += (_, report) => PostDebugReport(endpoint.Configuration, report);
                 endpoint.CloneReport = _debugging;
             }
         }
@@ -486,7 +486,7 @@ namespace OpenTabletDriver.Daemon
             }
         }
 
-        private void PostDebugReport(string tablet, IDeviceReport report)
+        private void PostDebugReport(TabletConfiguration tablet, IDeviceReport report)
         {
             DeviceReport?.Invoke(this, new DebugReportData(tablet, report));
         }

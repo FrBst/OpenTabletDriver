@@ -13,14 +13,14 @@ namespace OpenTabletDriver.Desktop.RPC
         {
         }
 
-        public DebugReportData(string deviceName, IDeviceReport report)
+        public DebugReportData(TabletConfiguration tabletConfiguration, IDeviceReport report)
         {
             var type = report.GetType();
 
-            DeviceName = deviceName;
+            DeviceName = tabletConfiguration.Name;
             ReportType = type.FullName!;
             Raw = ReportFormatter.GetStringRaw(report.Raw);
-            Formatted = ReportFormatter.GetStringFormat(report);
+            Formatted = ReportFormatter.GetStringFormat(tabletConfiguration, report);
 
             RawPosition = (report as ITabletReport)?.Position;
             TouchPoints = (report as ITouchReport)?.Touches;

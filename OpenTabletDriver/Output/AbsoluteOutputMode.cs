@@ -178,8 +178,19 @@ namespace OpenTabletDriver.Output
                 hoverDistanceHandler.SetHoverDistance(proximityReport.HoverDistance);
             if (report is IEraserReport eraserReport && Pointer is IEraserHandler eraserHandler)
                 eraserHandler.SetEraser(eraserReport.Eraser);
-            if (report is ITiltReport tiltReport && Pointer is ITiltHandler tiltHandler)
-                tiltHandler.SetTilt(tiltReport.Tilt);
+            if (report is ITiltReport tiltReport && Pointer is ITiltHandler tiltHandler) {
+
+                Vector2 tilt = new Vector2(tiltReport.Tilt.X, tiltReport.Tilt.Y);
+
+                if (Tablet.Configuration.Specifications.Pen.invertTiltX) {
+                    tilt.X *= -1;
+                }
+                if (Tablet.Configuration.Specifications.Pen.invertTiltY) {
+                    tilt.Y *= -1;
+                }
+
+                tiltHandler.SetTilt(tilt);
+            }
             if (report is ITabletReport tabletReport && Pointer is IPressureHandler pressureHandler)
                 pressureHandler.SetPressure(tabletReport.Pressure / (float)Tablet.Configuration.Specifications.Pen!.MaxPressure);
 
